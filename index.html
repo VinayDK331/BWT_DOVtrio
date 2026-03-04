@@ -1,0 +1,1837 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bro Reminder - AI Learning Accountability Companion</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --text-primary: #f0f0f5;
+      --accent-primary: #6366f1;
+      --accent-secondary: #22d3ee;
+    }
+    * { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', sans-serif; }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a2e 50%, var(--bg-primary) 100%);
+    }
+    
+    .glass-card {
+      background: rgba(18, 18, 26, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+    
+    .glow-border {
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), inset 0 0 20px rgba(99, 102, 241, 0.05);
+    }
+    
+    .pulse-glow {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    .animate-fadeInUp { animation: fadeInUp 0.5s ease-out forwards; }
+    .animate-slideIn { animation: slideIn 0.3s ease-out forwards; }
+    .animate-bounce-slow { animation: bounce 2s ease-in-out infinite; }
+    
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    
+    .streak-fire {
+      background: linear-gradient(180deg, #ff6b35 0%, #f7931e 50%, #ffcc02 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn-secondary {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.5);
+    }
+    
+    .input-field {
+      background: rgba(10, 10, 15, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .input-field:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+      outline: none;
+    }
+    
+    .category-card {
+      transition: all 0.3s ease;
+    }
+    
+    .category-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(99, 102, 241, 0.5);
+    }
+    
+    .category-card.selected {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.15);
+    }
+    
+    .task-item {
+      transition: all 0.3s ease;
+    }
+    
+    .task-item:hover {
+      background: rgba(99, 102, 241, 0.1);
+    }
+    
+    .day-btn {
+      transition: all 0.2s ease;
+    }
+    
+    .day-btn.selected {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      border-color: transparent;
+    }
+    
+    .sentiment-positive { color: #22c55e; }
+    .sentiment-neutral { color: #eab308; }
+    .sentiment-negative { color: #ef4444; }
+    
+    .mood-btn {
+      transition: all 0.2s ease;
+    }
+    
+    .mood-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .mood-btn.selected {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.2);
+    }
+    
+    .toast {
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    .reminder-popup {
+      animation: fadeInUp 0.3s ease-out;
+    }
+    
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(10, 10, 15, 0.5); }
+    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.5); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.7); }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full gradient-bg text-gray-100 overflow-auto">
+  <div id="app" class="min-h-full w-full"><!-- Loading Screen -->
+   <div id="loading-screen" class="fixed inset-0 gradient-bg flex items-center justify-center z-50">
+    <div class="text-center">
+     <div class="text-6xl mb-4 animate-bounce-slow">
+      🧠
+     </div>
+     <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Bro Reminder</h1>
+     <p class="text-gray-400 mt-2">Loading your accountability companion...</p>
+     <div class="mt-6 flex justify-center gap-1">
+      <div class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 0s;"></div>
+      <div class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 0.1s;"></div>
+      <div class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 0.2s;"></div>
+     </div>
+    </div>
+   </div><!-- Toast Container -->
+   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div><!-- Reminder Popup -->
+   <div id="reminder-popup" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden items-center justify-center">
+    <div class="reminder-popup glass-card glow-border rounded-2xl p-8 max-w-md mx-4">
+     <div class="text-center">
+      <div class="text-5xl mb-4" id="reminder-emoji">
+       ⏰
+      </div>
+      <h2 class="text-2xl font-bold mb-2" id="reminder-title">Time to Study!</h2>
+      <p class="text-gray-400 mb-6" id="reminder-message">Your scheduled task is about to begin.</p>
+      <p class="text-lg font-semibold text-indigo-400 mb-6" id="reminder-task-name"></p>
+      <div class="flex gap-3 justify-center"><button onclick="startTask()" class="btn-primary px-6 py-3 rounded-xl font-semibold">Start Now</button> <button onclick="snoozeReminder()" class="btn-secondary px-6 py-3 rounded-xl font-semibold">Snooze 5 min</button>
+      </div><button onclick="showMoodSelector()" class="mt-4 text-gray-500 text-sm hover:text-gray-300">Not feeling it? Let me know how you feel</button>
+     </div>
+    </div>
+   </div><!-- Mood Selector Modal -->
+   <div id="mood-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden items-center justify-center">
+    <div class="glass-card glow-border rounded-2xl p-8 max-w-lg mx-4 animate-fadeInUp">
+     <h2 class="text-2xl font-bold text-center mb-6">How are you feeling right now?</h2>
+     <div class="grid grid-cols-4 gap-3 mb-6" id="mood-options"><button class="mood-btn glass-card rounded-xl p-4 text-center" data-mood="stressed">
+       <div class="text-3xl mb-2">
+        😰
+       </div>
+       <div class="text-xs">
+        Stressed
+       </div></button> <button class="mood-btn glass-card rounded-xl p-4 text-center" data-mood="tired">
+       <div class="text-3xl mb-2">
+        😴
+       </div>
+       <div class="text-xs">
+        Tired
+       </div></button> <button class="mood-btn glass-card rounded-xl p-4 text-center" data-mood="angry">
+       <div class="text-3xl mb-2">
+        😤
+       </div>
+       <div class="text-xs">
+        Angry
+       </div></button> <button class="mood-btn glass-card rounded-xl p-4 text-center" data-mood="sad">
+       <div class="text-3xl mb-2">
+        😢
+       </div>
+       <div class="text-xs">
+        Bad Day
+       </div></button> <button class="mood-btn glass-card rounded-xl p-4 text-center" data-mood="lazy">
+       <div class="text-3xl mb-2">
+        🦥
+       </div>
+       <div class="text-xs">
+        Lazy
+       </div></button> <button class="mood-btn glass-card rounded-xl p-4 text-center" data-mood="overwhelmed">
+       <div class="text-3xl mb-2">
+        🤯
+       </div>
+       <div class="text-xs">
+        Overwhelmed
+       </div></button> <button class="mood-btn glass-card rounded-xl p-4 text-center" data-mood="moodoff">
+       <div class="text-3xl mb-2">
+        😑
+       </div>
+       <div class="text-xs">
+        Mood Off
+       </div></button> <button class="mood-btn glass-card rounded-xl p-4 text-center" data-mood="other">
+       <div class="text-3xl mb-2">
+        🤔
+       </div>
+       <div class="text-xs">
+        Other
+       </div></button>
+     </div>
+     <div id="mood-response" class="hidden text-center">
+      <p class="text-gray-300 mb-4" id="mood-message"></p><button onclick="startMicroSession()" class="btn-primary px-6 py-3 rounded-xl font-semibold">Try 10-min Micro Session</button>
+     </div><button onclick="closeMoodModal()" class="w-full mt-4 btn-secondary py-3 rounded-xl">Maybe Later</button>
+    </div>
+   </div><!-- Login Page -->
+   <div id="login-page" class="min-h-full flex items-center justify-center p-4 hidden">
+    <div class="glass-card glow-border rounded-3xl p-8 w-full max-w-md animate-fadeInUp">
+     <div class="text-center mb-8">
+      <div class="text-6xl mb-4">
+       🧠
+      </div>
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent" id="login-title">Bro Reminder</h1>
+      <p class="text-gray-400 mt-2" id="login-tagline">Your AI Learning Accountability Companion</p>
+     </div>
+     <div id="login-form">
+      <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Email</label> <input type="email" id="login-email" class="input-field w-full px-4 py-3 rounded-xl text-white" placeholder="your@email.com">
+      </div>
+      <div class="mb-6"><label class="block text-sm font-medium text-gray-300 mb-2">Password</label> <input type="password" id="login-password" class="input-field w-full px-4 py-3 rounded-xl text-white" placeholder="••••••••">
+      </div><button onclick="handleLogin()" class="btn-primary w-full py-4 rounded-xl font-semibold text-lg mb-4">Sign In</button>
+      <div class="relative my-6">
+       <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-gray-700"></div>
+       </div>
+       <div class="relative flex justify-center text-sm"><span class="px-2 bg-transparent text-gray-500">or continue with</span>
+       </div>
+      </div><button onclick="handleGoogleLogin()" class="w-full flex items-center justify-center gap-3 bg-white text-gray-900 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
+       <svg class="w-5 h-5" viewbox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+       </svg> Continue with Google </button>
+      <p class="text-center text-gray-500 mt-6">Don't have an account? <button onclick="showSignup()" class="text-indigo-400 hover:text-indigo-300">Sign up</button></p>
+     </div>
+     <div id="signup-form" class="hidden">
+      <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Full Name</label> <input type="text" id="signup-name" class="input-field w-full px-4 py-3 rounded-xl text-white" placeholder="John Doe">
+      </div>
+      <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Email</label> <input type="email" id="signup-email" class="input-field w-full px-4 py-3 rounded-xl text-white" placeholder="your@email.com">
+      </div>
+      <div class="mb-6"><label class="block text-sm font-medium text-gray-300 mb-2">Password</label> <input type="password" id="signup-password" class="input-field w-full px-4 py-3 rounded-xl text-white" placeholder="••••••••">
+      </div><button onclick="handleSignup()" class="btn-primary w-full py-4 rounded-xl font-semibold text-lg mb-4">Create Account</button>
+      <p class="text-center text-gray-500">Already have an account? <button onclick="showLogin()" class="text-indigo-400 hover:text-indigo-300">Sign in</button></p>
+     </div>
+    </div>
+   </div><!-- Onboarding Pages -->
+   <div id="onboarding" class="min-h-full hidden"><!-- Step 1: Category Selection -->
+    <div id="onboarding-step-1" class="min-h-full p-4 md:p-8">
+     <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-8 animate-fadeInUp">
+       <div class="text-5xl mb-4">
+        🎯
+       </div>
+       <h1 class="text-3xl font-bold mb-2">What do you want to learn?</h1>
+       <p class="text-gray-400">Select a category to get started</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8" id="category-grid"><button class="category-card glass-card rounded-2xl p-6 text-left" data-category="python">
+        <div class="text-4xl mb-3">
+         🐍
+        </div><h3 class="font-semibold mb-1">Python &amp; AI</h3><p class="text-sm text-gray-400">Learn programming &amp; machine learning</p></button> <button class="category-card glass-card rounded-2xl p-6 text-left" data-category="webdev">
+        <div class="text-4xl mb-3">
+         💻
+        </div><h3 class="font-semibold mb-1">Web Development</h3><p class="text-sm text-gray-400">Frontend, Backend &amp; Full Stack</p></button> <button class="category-card glass-card rounded-2xl p-6 text-left" data-category="exam">
+        <div class="text-4xl mb-3">
+         📚
+        </div><h3 class="font-semibold mb-1">Semester Exams</h3><p class="text-sm text-gray-400">Prepare for your academics</p></button> <button class="category-card glass-card rounded-2xl p-6 text-left" data-category="competitive">
+        <div class="text-4xl mb-3">
+         🏆
+        </div><h3 class="font-semibold mb-1">Competitive Exams</h3><p class="text-sm text-gray-400">GATE, UPSC, SSC &amp; more</p></button> <button class="category-card glass-card rounded-2xl p-6 text-left" data-category="personal">
+        <div class="text-4xl mb-3">
+         🌟
+        </div><h3 class="font-semibold mb-1">Personal Goals</h3><p class="text-sm text-gray-400">Fitness, habits &amp; self-improvement</p></button> <button class="category-card glass-card rounded-2xl p-6 text-left" data-category="hobby">
+        <div class="text-4xl mb-3">
+         🎨
+        </div><h3 class="font-semibold mb-1">Hobbies</h3><p class="text-sm text-gray-400">Music, art, languages &amp; more</p></button>
+      </div>
+      <div class="glass-card rounded-2xl p-4 mb-8"><label class="block text-sm font-medium text-gray-300 mb-2">Or create your own category</label>
+       <div class="flex gap-3"><input type="text" id="custom-category" class="input-field flex-1 px-4 py-3 rounded-xl text-white" placeholder="e.g., Guitar Learning"> <button onclick="addCustomCategory()" class="btn-secondary px-6 rounded-xl">Add</button>
+       </div>
+      </div>
+      <div class="flex justify-end"><button onclick="goToStep(2)" id="step1-next" class="btn-primary px-8 py-4 rounded-xl font-semibold opacity-50 cursor-not-allowed" disabled>Continue →</button>
+      </div>
+     </div>
+    </div><!-- Step 2: Goal Definition -->
+    <div id="onboarding-step-2" class="min-h-full p-4 md:p-8 hidden">
+     <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-8 animate-fadeInUp">
+       <div class="text-5xl mb-4">
+        📝
+       </div>
+       <h1 class="text-3xl font-bold mb-2">Define Your Goal</h1>
+       <p class="text-gray-400">Be specific about what you want to achieve</p>
+      </div>
+      <div class="glass-card glow-border rounded-2xl p-6 mb-6 animate-fadeInUp" style="animation-delay: 0.1s;">
+       <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Goal Title *</label> <input type="text" id="goal-title" class="input-field w-full px-4 py-3 rounded-xl text-white" placeholder="e.g., Complete Python Intermediate in 30 days">
+       </div>
+       <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Deadline *</label> <input type="date" id="goal-deadline" class="input-field w-full px-4 py-3 rounded-xl text-white">
+       </div>
+       <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Priority</label>
+        <div class="flex gap-3"><button class="priority-btn btn-secondary px-4 py-2 rounded-lg text-sm" data-priority="low">🟢 Low</button> <button class="priority-btn btn-secondary px-4 py-2 rounded-lg text-sm selected" data-priority="medium">🟡 Medium</button> <button class="priority-btn btn-secondary px-4 py-2 rounded-lg text-sm" data-priority="high">🔴 High</button>
+        </div>
+       </div>
+       <div><label class="block text-sm font-medium text-gray-300 mb-2">Notes (optional)</label> <textarea id="goal-notes" class="input-field w-full px-4 py-3 rounded-xl text-white h-24 resize-none" placeholder="Any additional details or milestones..."></textarea>
+       </div>
+      </div>
+      <div class="flex justify-between"><button onclick="goToStep(1)" class="btn-secondary px-8 py-4 rounded-xl font-semibold">← Back</button> <button onclick="goToStep(3)" id="step2-next" class="btn-primary px-8 py-4 rounded-xl font-semibold">Continue →</button>
+      </div>
+     </div>
+    </div><!-- Step 3: Schedule Setup -->
+    <div id="onboarding-step-3" class="min-h-full p-4 md:p-8 hidden">
+     <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-8 animate-fadeInUp">
+       <div class="text-5xl mb-4">
+        📅
+       </div>
+       <h1 class="text-3xl font-bold mb-2">Set Your Schedule</h1>
+       <p class="text-gray-400">When can you dedicate time to learning?</p>
+      </div>
+      <div class="glass-card glow-border rounded-2xl p-6 mb-6 animate-fadeInUp" style="animation-delay: 0.1s;">
+       <div class="mb-6"><label class="block text-sm font-medium text-gray-300 mb-4">How many days per week can you study?</label>
+        <div class="flex items-center gap-4"><input type="range" id="study-days-range" min="1" max="7" value="5" class="flex-1 accent-indigo-500"> <span id="study-days-value" class="text-2xl font-bold text-indigo-400">5</span> <span class="text-gray-400">days</span>
+        </div>
+       </div>
+       <div class="mb-6"><label class="block text-sm font-medium text-gray-300 mb-4">Select your study days</label>
+        <div class="flex flex-wrap gap-2" id="day-selector"><button class="day-btn glass-card px-4 py-3 rounded-xl font-medium" data-day="sun">Sun</button> <button class="day-btn glass-card px-4 py-3 rounded-xl font-medium selected" data-day="mon">Mon</button> <button class="day-btn glass-card px-4 py-3 rounded-xl font-medium selected" data-day="tue">Tue</button> <button class="day-btn glass-card px-4 py-3 rounded-xl font-medium selected" data-day="wed">Wed</button> <button class="day-btn glass-card px-4 py-3 rounded-xl font-medium selected" data-day="thu">Thu</button> <button class="day-btn glass-card px-4 py-3 rounded-xl font-medium selected" data-day="fri">Fri</button> <button class="day-btn glass-card px-4 py-3 rounded-xl font-medium" data-day="sat">Sat</button>
+        </div>
+       </div>
+       <div><label class="block text-sm font-medium text-gray-300 mb-4">Preferred study time</label>
+        <div class="flex gap-4">
+         <div class="flex-1"><label class="text-xs text-gray-500 mb-1 block">Start Time</label> <input type="time" id="study-time-start" value="18:00" class="input-field w-full px-4 py-3 rounded-xl text-white">
+         </div>
+         <div class="flex-1"><label class="text-xs text-gray-500 mb-1 block">End Time</label> <input type="time" id="study-time-end" value="19:00" class="input-field w-full px-4 py-3 rounded-xl text-white">
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="flex justify-between"><button onclick="goToStep(2)" class="btn-secondary px-8 py-4 rounded-xl font-semibold">← Back</button> <button onclick="goToStep(4)" class="btn-primary px-8 py-4 rounded-xl font-semibold">Continue →</button>
+      </div>
+     </div>
+    </div><!-- Step 4: Motivation -->
+    <div id="onboarding-step-4" class="min-h-full p-4 md:p-8 hidden">
+     <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-8 animate-fadeInUp">
+       <div class="text-5xl mb-4">
+        💪
+       </div>
+       <h1 class="text-3xl font-bold mb-2">What Drives You?</h1>
+       <p class="text-gray-400">Your motivation will help us encourage you when things get tough</p>
+      </div>
+      <div class="glass-card glow-border rounded-2xl p-6 mb-6 animate-fadeInUp" style="animation-delay: 0.1s;"><label class="block text-sm font-medium text-gray-300 mb-4" id="motivation-label">What is your motivation for this goal?</label> <textarea id="user-motivation" class="input-field w-full px-4 py-4 rounded-xl text-white h-32 resize-none text-lg" placeholder="e.g., I want to get a better job, I want to pass my exams with flying colors, I want to prove to myself that I can do this..."></textarea>
+       <div class="mt-6 p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30">
+        <div class="flex items-start gap-3">
+         <div class="text-2xl">
+          💡
+         </div>
+         <div>
+          <p class="text-sm text-gray-300">Your motivation will be used to create personalized encouragement messages when you're feeling down or struggling to stay on track.</p>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="flex justify-between"><button onclick="goToStep(3)" class="btn-secondary px-8 py-4 rounded-xl font-semibold">← Back</button> <button onclick="completeOnboarding()" class="btn-primary px-8 py-4 rounded-xl font-semibold pulse-glow">Start My Journey 🚀</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Main Dashboard -->
+   <div id="dashboard" class="hidden"><!-- Header -->
+    <header class="glass-card border-b border-gray-800 sticky top-0 z-30">
+     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+       <div class="text-3xl">
+        🧠
+       </div>
+       <div>
+        <h1 class="font-bold text-lg" id="dashboard-title">Bro Reminder</h1>
+        <p class="text-xs text-gray-400">Welcome back, <span id="user-name-display">User</span>!</p>
+       </div>
+      </div>
+      <div class="flex items-center gap-4">
+       <div class="hidden md:flex items-center gap-2 glass-card rounded-full px-4 py-2"><span class="text-2xl streak-fire">🔥</span> <span class="font-bold" id="header-streak">0</span> <span class="text-gray-400 text-sm">day streak</span>
+       </div><button onclick="showAddGoalModal()" class="btn-primary px-4 py-2 rounded-xl flex items-center gap-2"> <span>+</span> <span class="hidden md:inline">New Goal</span> </button> <button onclick="handleLogout()" class="btn-secondary p-2 rounded-xl" title="Logout">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg></button>
+      </div>
+     </div>
+    </header><!-- Dashboard Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6"><!-- Stats Overview -->
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="glass-card rounded-2xl p-4 animate-fadeInUp">
+       <div class="flex items-center justify-between mb-2"><span class="text-gray-400 text-sm">Daily Progress</span> <span class="text-2xl">📊</span>
+       </div>
+       <div class="text-3xl font-bold text-indigo-400" id="daily-progress">
+        0%
+       </div>
+       <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+        <div class="bg-indigo-500 h-2 rounded-full transition-all" id="daily-progress-bar" style="width: 0%"></div>
+       </div>
+      </div>
+      <div class="glass-card rounded-2xl p-4 animate-fadeInUp" style="animation-delay: 0.1s;">
+       <div class="flex items-center justify-between mb-2"><span class="text-gray-400 text-sm">Streak</span> <span class="text-2xl streak-fire">🔥</span>
+       </div>
+       <div class="text-3xl font-bold text-orange-400" id="current-streak">
+        0
+       </div>
+       <p class="text-xs text-gray-500 mt-1">days in a row</p>
+      </div>
+      <div class="glass-card rounded-2xl p-4 animate-fadeInUp" style="animation-delay: 0.2s;">
+       <div class="flex items-center justify-between mb-2"><span class="text-gray-400 text-sm">Execution Score</span> <span class="text-2xl">⚡</span>
+       </div>
+       <div class="text-3xl font-bold text-cyan-400" id="execution-score">
+        0
+       </div>
+       <p class="text-xs text-gray-500 mt-1">consistency rating</p>
+      </div>
+      <div class="glass-card rounded-2xl p-4 animate-fadeInUp" style="animation-delay: 0.3s;">
+       <div class="flex items-center justify-between mb-2"><span class="text-gray-400 text-sm">Status</span> <span class="text-2xl" id="status-emoji">🎯</span>
+       </div>
+       <div class="text-xl font-bold" id="current-status">
+        On Track
+       </div>
+       <p class="text-xs text-gray-500 mt-1" id="status-detail">Keep it up!</p>
+      </div>
+     </div><!-- Main Grid -->
+     <div class="grid md:grid-cols-3 gap-6"><!-- Left Column: Goals & Tasks -->
+      <div class="md:col-span-2 space-y-6"><!-- Today's Tasks -->
+       <div class="glass-card glow-border rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+         <div>
+          <h2 class="text-xl font-bold">Today's Tasks</h2>
+          <p class="text-sm text-gray-400" id="today-date"></p>
+         </div><button onclick="showAddTaskModal()" class="btn-secondary px-4 py-2 rounded-xl text-sm">+ Add Task</button>
+        </div>
+        <div id="today-tasks" class="space-y-3">
+         <div class="text-center py-8 text-gray-500">
+          <div class="text-4xl mb-2">
+           📋
+          </div>
+          <p>No tasks for today. Add a goal to get started!</p>
+         </div>
+        </div>
+       </div><!-- Active Goals -->
+       <div class="glass-card rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+         <h2 class="text-xl font-bold">Active Goals</h2><button onclick="showAddGoalModal()" class="text-indigo-400 hover:text-indigo-300 text-sm">+ Add Goal</button>
+        </div>
+        <div id="active-goals" class="space-y-4">
+         <div class="text-center py-8 text-gray-500">
+          <div class="text-4xl mb-2">
+           🎯
+          </div>
+          <p>No active goals yet. Create your first goal!</p>
+         </div>
+        </div>
+       </div>
+      </div><!-- Right Column: Reflections & Insights -->
+      <div class="space-y-6"><!-- Daily Reflection -->
+       <div class="glass-card rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-4"><span class="text-2xl">💭</span>
+         <h2 class="text-lg font-bold">Daily Reflection</h2>
+        </div><textarea id="daily-reflection" class="input-field w-full px-4 py-3 rounded-xl text-white h-24 resize-none text-sm" placeholder="How did today go? What did you learn?"></textarea> <button onclick="submitReflection()" class="btn-primary w-full py-3 rounded-xl mt-4 font-semibold">Save Reflection</button>
+        <div id="sentiment-result" class="hidden mt-4 p-4 rounded-xl bg-gray-800/50">
+         <div class="flex items-center gap-2 mb-2"><span id="sentiment-emoji">😊</span> <span class="font-semibold" id="sentiment-label">Positive</span>
+         </div>
+         <p class="text-sm text-gray-400" id="sentiment-feedback"></p>
+        </div>
+       </div><!-- Weekly Trend -->
+       <div class="glass-card rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-4"><span class="text-2xl">📈</span>
+         <h2 class="text-lg font-bold">7-Day Trend</h2>
+        </div>
+        <div id="weekly-trend" class="flex justify-between items-end h-24 px-2">
+         <div class="flex flex-col items-center gap-1">
+          <div class="w-6 bg-gray-700 rounded-t" style="height: 20px;"></div><span class="text-xs text-gray-500">M</span>
+         </div>
+         <div class="flex flex-col items-center gap-1">
+          <div class="w-6 bg-gray-700 rounded-t" style="height: 35px;"></div><span class="text-xs text-gray-500">T</span>
+         </div>
+         <div class="flex flex-col items-center gap-1">
+          <div class="w-6 bg-gray-700 rounded-t" style="height: 50px;"></div><span class="text-xs text-gray-500">W</span>
+         </div>
+         <div class="flex flex-col items-center gap-1">
+          <div class="w-6 bg-gray-700 rounded-t" style="height: 40px;"></div><span class="text-xs text-gray-500">T</span>
+         </div>
+         <div class="flex flex-col items-center gap-1">
+          <div class="w-6 bg-gray-700 rounded-t" style="height: 60px;"></div><span class="text-xs text-gray-500">F</span>
+         </div>
+         <div class="flex flex-col items-center gap-1">
+          <div class="w-6 bg-gray-700 rounded-t" style="height: 25px;"></div><span class="text-xs text-gray-500">S</span>
+         </div>
+         <div class="flex flex-col items-center gap-1">
+          <div class="w-6 bg-indigo-500 rounded-t" style="height: 45px;"></div><span class="text-xs text-gray-400">S</span>
+         </div>
+        </div>
+       </div><!-- Motivation Card -->
+       <div class="glass-card rounded-2xl p-6 bg-gradient-to-br from-indigo-900/30 to-purple-900/30">
+        <div class="flex items-center gap-3 mb-4"><span class="text-2xl">✨</span>
+         <h2 class="text-lg font-bold">Your Why</h2>
+        </div>
+        <p class="text-gray-300 italic" id="motivation-display">"Your motivation will appear here..."</p>
+       </div><!-- Badges -->
+       <div class="glass-card rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-4"><span class="text-2xl">🏅</span>
+         <h2 class="text-lg font-bold">Achievements</h2>
+        </div>
+        <div id="badges-container" class="flex flex-wrap gap-2">
+         <div class="bg-gray-800/50 rounded-full px-3 py-1 text-sm flex items-center gap-1 opacity-50"><span>🌟</span> First Step
+         </div>
+         <div class="bg-gray-800/50 rounded-full px-3 py-1 text-sm flex items-center gap-1 opacity-50"><span>🔥</span> 7 Day Streak
+         </div>
+         <div class="bg-gray-800/50 rounded-full px-3 py-1 text-sm flex items-center gap-1 opacity-50"><span>💪</span> Task Master
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div><!-- Add Goal Modal -->
+   <div id="add-goal-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden items-center justify-center">
+    <div class="glass-card glow-border rounded-2xl p-6 max-w-lg w-full mx-4 animate-fadeInUp max-h-[90%] overflow-y-auto">
+     <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold">Add New Goal</h2><button onclick="closeAddGoalModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+     </div>
+     <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Category</label> <select id="modal-goal-category" class="input-field w-full px-4 py-3 rounded-xl text-white"> <option value="python">🐍 Python &amp; AI</option> <option value="webdev">💻 Web Development</option> <option value="exam">📚 Semester Exams</option> <option value="competitive">🏆 Competitive Exams</option> <option value="personal">🌟 Personal Goals</option> <option value="hobby">🎨 Hobbies</option> </select>
+     </div>
+     <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Goal Title *</label> <input type="text" id="modal-goal-title" class="input-field w-full px-4 py-3 rounded-xl text-white" placeholder="e.g., Learn React in 2 weeks">
+     </div>
+     <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Deadline *</label> <input type="date" id="modal-goal-deadline" class="input-field w-full px-4 py-3 rounded-xl text-white">
+     </div>
+     <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Priority</label>
+      <div class="flex gap-3"><button class="modal-priority-btn btn-secondary px-4 py-2 rounded-lg text-sm" data-priority="low">🟢 Low</button> <button class="modal-priority-btn btn-secondary px-4 py-2 rounded-lg text-sm selected" data-priority="medium">🟡 Medium</button> <button class="modal-priority-btn btn-secondary px-4 py-2 rounded-lg text-sm" data-priority="high">🔴 High</button>
+      </div>
+     </div>
+     <div class="mb-6"><label class="block text-sm font-medium text-gray-300 mb-2">Notes (optional)</label> <textarea id="modal-goal-notes" class="input-field w-full px-4 py-3 rounded-xl text-white h-20 resize-none" placeholder="Additional details..."></textarea>
+     </div><button onclick="saveGoalFromModal()" class="btn-primary w-full py-4 rounded-xl font-semibold">Create Goal</button>
+    </div>
+   </div><!-- Add Task Modal -->
+   <div id="add-task-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden items-center justify-center">
+    <div class="glass-card glow-border rounded-2xl p-6 max-w-lg w-full mx-4 animate-fadeInUp">
+     <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold">Add New Task</h2><button onclick="closeAddTaskModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+     </div>
+     <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Select Goal</label> <select id="modal-task-goal" class="input-field w-full px-4 py-3 rounded-xl text-white"> <option value="">-- Select a goal --</option> </select>
+     </div>
+     <div class="mb-4"><label class="block text-sm font-medium text-gray-300 mb-2">Task Title *</label> <input type="text" id="modal-task-title" class="input-field w-full px-4 py-3 rounded-xl text-white" placeholder="e.g., Complete Chapter 3">
+     </div>
+     <div class="grid grid-cols-2 gap-4 mb-4">
+      <div><label class="block text-sm font-medium text-gray-300 mb-2">Deadline</label> <input type="date" id="modal-task-deadline" class="input-field w-full px-4 py-3 rounded-xl text-white">
+      </div>
+      <div><label class="block text-sm font-medium text-gray-300 mb-2">Duration (min)</label> <input type="number" id="modal-task-duration" class="input-field w-full px-4 py-3 rounded-xl text-white" value="30" min="5" max="180">
+      </div>
+     </div>
+     <div class="mb-6"><label class="block text-sm font-medium text-gray-300 mb-2">Priority</label>
+      <div class="flex gap-3"><button class="task-priority-btn btn-secondary px-4 py-2 rounded-lg text-sm" data-priority="low">🟢 Low</button> <button class="task-priority-btn btn-secondary px-4 py-2 rounded-lg text-sm selected" data-priority="medium">🟡 Medium</button> <button class="task-priority-btn btn-secondary px-4 py-2 rounded-lg text-sm" data-priority="high">🔴 High</button>
+      </div>
+     </div><button onclick="saveTaskFromModal()" class="btn-primary w-full py-4 rounded-xl font-semibold">Add Task</button>
+    </div>
+   </div>
+  </div>
+  <script>
+    // ============================================
+    // APP STATE & CONFIG
+    // ============================================
+    
+    const defaultConfig = {
+      app_title: 'Bro Reminder',
+      tagline: 'Your AI Learning Accountability Companion',
+      motivation_prompt: 'What drives you to learn?',
+      background_color: '#0a0a0f',
+      surface_color: '#12121a',
+      text_color: '#f0f0f5',
+      primary_color: '#6366f1',
+      secondary_color: '#22d3ee'
+    };
+    
+    let appState = {
+      isLoggedIn: false,
+      currentUser: null,
+      selectedCategory: null,
+      selectedPriority: 'medium',
+      selectedDays: ['mon', 'tue', 'wed', 'thu', 'fri'],
+      goals: [],
+      tasks: [],
+      reflections: [],
+      userProfile: null,
+      reminderTimer: null,
+      currentTaskId: null
+    };
+    
+    let allData = [];
+    
+    // ============================================
+    // SDK INITIALIZATION
+    // ============================================
+    
+    const dataHandler = {
+      onDataChanged(data) {
+        allData = data;
+        processData(data);
+        if (appState.isLoggedIn) {
+          renderDashboard();
+        }
+      }
+    };
+    
+    async function initializeApp() {
+      // Initialize Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            applyConfig(config);
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (v) => window.elementSdk.setConfig({ background_color: v })
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (v) => window.elementSdk.setConfig({ surface_color: v })
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (v) => window.elementSdk.setConfig({ text_color: v })
+              },
+              {
+                get: () => config.primary_color || defaultConfig.primary_color,
+                set: (v) => window.elementSdk.setConfig({ primary_color: v })
+              },
+              {
+                get: () => config.secondary_color || defaultConfig.secondary_color,
+                set: (v) => window.elementSdk.setConfig({ secondary_color: v })
+              }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['app_title', config.app_title || defaultConfig.app_title],
+            ['tagline', config.tagline || defaultConfig.tagline],
+            ['motivation_prompt', config.motivation_prompt || defaultConfig.motivation_prompt]
+          ])
+        });
+      }
+      
+      // Initialize Data SDK
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+      
+      // Check for existing session
+      checkSession();
+      
+      // Hide loading screen
+      setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+      }, 1500);
+    }
+    
+    function applyConfig(config) {
+      const c = { ...defaultConfig, ...config };
+      
+      document.documentElement.style.setProperty('--bg-primary', c.background_color);
+      document.documentElement.style.setProperty('--bg-secondary', c.surface_color);
+      document.documentElement.style.setProperty('--text-primary', c.text_color);
+      document.documentElement.style.setProperty('--accent-primary', c.primary_color);
+      document.documentElement.style.setProperty('--accent-secondary', c.secondary_color);
+      
+      const loginTitle = document.getElementById('login-title');
+      const dashboardTitle = document.getElementById('dashboard-title');
+      const loginTagline = document.getElementById('login-tagline');
+      const motivationLabel = document.getElementById('motivation-label');
+      
+      if (loginTitle) loginTitle.textContent = c.app_title;
+      if (dashboardTitle) dashboardTitle.textContent = c.app_title;
+      if (loginTagline) loginTagline.textContent = c.tagline;
+      if (motivationLabel) motivationLabel.textContent = c.motivation_prompt;
+    }
+    
+    // ============================================
+    // DATA PROCESSING
+    // ============================================
+    
+    function processData(data) {
+      appState.goals = data.filter(d => d.type === 'goal');
+      appState.tasks = data.filter(d => d.type === 'task');
+      appState.reflections = data.filter(d => d.type === 'reflection');
+      
+      const userProfiles = data.filter(d => d.type === 'user');
+      if (userProfiles.length > 0) {
+        appState.userProfile = userProfiles[0];
+        if (appState.userProfile.userId) {
+          appState.isLoggedIn = true;
+          appState.currentUser = {
+            id: appState.userProfile.userId,
+            name: appState.userProfile.userName,
+            email: appState.userProfile.userEmail
+          };
+        }
+      }
+    }
+    
+    function checkSession() {
+      if (appState.userProfile && appState.userProfile.userId) {
+        appState.isLoggedIn = true;
+        showDashboard();
+      } else {
+        showLoginPage();
+      }
+    }
+    
+    // ============================================
+    // AUTHENTICATION
+    // ============================================
+    
+    function showLoginPage() {
+      document.getElementById('login-page').classList.remove('hidden');
+      document.getElementById('onboarding').classList.add('hidden');
+      document.getElementById('dashboard').classList.add('hidden');
+    }
+    
+    function showLogin() {
+      document.getElementById('login-form').classList.remove('hidden');
+      document.getElementById('signup-form').classList.add('hidden');
+    }
+    
+    function showSignup() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('signup-form').classList.remove('hidden');
+    }
+    
+    async function handleLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      
+      if (!email || !password) {
+        showToast('Please enter email and password', 'error');
+        return;
+      }
+      
+      // Find existing user
+      const existingUser = allData.find(d => d.type === 'user' && d.userEmail === email);
+      
+      if (existingUser) {
+        appState.isLoggedIn = true;
+        appState.currentUser = {
+          id: existingUser.userId,
+          name: existingUser.userName,
+          email: existingUser.userEmail
+        };
+        appState.userProfile = existingUser;
+        
+        showToast('Welcome back! 🎉', 'success');
+        showDashboard();
+      } else {
+        showToast('Account not found. Please sign up first.', 'error');
+      }
+    }
+    
+    async function handleGoogleLogin() {
+      // Simulate Google login
+      const mockUser = {
+        id: 'google_' + Date.now(),
+        name: 'Google User',
+        email: 'user@gmail.com'
+      };
+      
+      appState.currentUser = mockUser;
+      
+      // Check if user exists
+      const existingUser = allData.find(d => d.type === 'user' && d.userEmail === mockUser.email);
+      
+      if (existingUser) {
+        appState.isLoggedIn = true;
+        appState.userProfile = existingUser;
+        showToast('Welcome back! 🎉', 'success');
+        showDashboard();
+      } else {
+        showOnboarding();
+      }
+    }
+    
+    async function handleSignup() {
+      const name = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      
+      if (!name || !email || !password) {
+        showToast('Please fill all fields', 'error');
+        return;
+      }
+      
+      // Check if user already exists
+      const existingUser = allData.find(d => d.type === 'user' && d.userEmail === email);
+      if (existingUser) {
+        showToast('Account already exists. Please log in.', 'error');
+        showLogin();
+        return;
+      }
+      
+      appState.currentUser = {
+        id: 'user_' + Date.now(),
+        name: name,
+        email: email
+      };
+      
+      showToast('Account created! Let\'s set up your goals 🚀', 'success');
+      appState.isLoggedIn = true;// Change---
+      showOnboarding();
+    }
+    
+    function handleLogout() {
+      appState.isLoggedIn = false;
+      appState.currentUser = null;
+      appState.userProfile = null;
+      showToast('Logged out successfully', 'success');
+      showLoginPage();
+    }
+    
+    // ============================================
+    // ONBOARDING
+    // ============================================
+    
+    function showOnboarding() {
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('dashboard').classList.add('hidden');
+      
+      goToStep(1);
+      setupCategorySelection();
+      setupDaySelection();
+      setupPrioritySelection();
+      setupStudyDaysRange();
+    }
+    
+    function goToStep(step) {
+      for (let i = 1; i <= 4; i++) {
+        const stepEl = document.getElementById(`onboarding-step-${i}`);
+        if (stepEl) {
+          stepEl.classList.add('hidden');
+        }
+      }
+      
+      const targetStep = document.getElementById(`onboarding-step-${step}`);
+      if (targetStep) {
+        targetStep.classList.remove('hidden');
+      }
+      
+      // Set default deadline
+      if (step === 2) {
+        const deadlineInput = document.getElementById('goal-deadline');
+        if (deadlineInput && !deadlineInput.value) {
+          const defaultDeadline = new Date();
+          defaultDeadline.setDate(defaultDeadline.getDate() + 30);
+          deadlineInput.value = defaultDeadline.toISOString().split('T')[0];
+        }
+      }
+    }
+    
+    function setupCategorySelection() {
+      const categoryCards = document.querySelectorAll('.category-card');
+      categoryCards.forEach(card => {
+        card.addEventListener('click', () => {
+          categoryCards.forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          appState.selectedCategory = card.dataset.category;
+          
+          const nextBtn = document.getElementById('step1-next');
+          nextBtn.disabled = false;
+          nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        });
+      });
+    }
+    
+    function addCustomCategory() {
+      const input = document.getElementById('custom-category');
+      const value = input.value.trim();
+      
+      if (!value) return;
+      
+      appState.selectedCategory = value.toLowerCase().replace(/\s+/g, '_');
+      
+      // Deselect other cards
+      document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+      
+      const nextBtn = document.getElementById('step1-next');
+      nextBtn.disabled = false;
+      nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      
+      showToast(`Category "${value}" selected!`, 'success');
+      input.value = '';
+    }
+    
+    function setupDaySelection() {
+      const dayBtns = document.querySelectorAll('.day-btn');
+      dayBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.classList.toggle('selected');
+          const day = btn.dataset.day;
+          
+          if (appState.selectedDays.includes(day)) {
+            appState.selectedDays = appState.selectedDays.filter(d => d !== day);
+          } else {
+            appState.selectedDays.push(day);
+          }
+        });
+      });
+    }
+    
+    function setupPrioritySelection() {
+      document.querySelectorAll('.priority-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          appState.selectedPriority = btn.dataset.priority;
+        });
+      });
+    }
+    
+    function setupStudyDaysRange() {
+      const range = document.getElementById('study-days-range');
+      const value = document.getElementById('study-days-value');
+      
+      if (range && value) {
+        range.addEventListener('input', () => {
+          value.textContent = range.value;
+        });
+      }
+    }
+    
+    async function completeOnboarding() {
+
+
+// ==================================================================
+// Fallback if Data SDK not available
+if (!window.dataSdk) {
+    console.warn("Data SDK not available, running in demo mode");
+
+    appState.userProfile = {
+        userId: appState.currentUser.id,
+        userMotivation: document.getElementById('user-motivation').value || "To become the best version of myself",
+        streakCount: 0,
+        executionScore: 0
+    };
+
+    appState.isLoggedIn = true;
+    showDashboard();
+    return;
+}
+
+//================================================
+      const goalTitle = document.getElementById('goal-title').value.trim();
+      const goalDeadline = document.getElementById('goal-deadline').value;
+      const goalNotes = document.getElementById('goal-notes').value.trim();
+      const motivation = document.getElementById('user-motivation').value.trim();
+      const studyTimeStart = document.getElementById('study-time-start').value;
+      const studyTimeEnd = document.getElementById('study-time-end').value;
+      
+      if (!goalTitle) {
+        showToast('Please enter a goal title', 'error');
+        goToStep(2);
+        return;
+      }
+      
+      if (!goalDeadline) {
+        showToast('Please select a deadline', 'error');
+        goToStep(2);
+        return;
+      }
+      
+      // Check data limit
+      if (allData.length >= 997) {
+        showToast('Maximum data limit reached. Please delete some items.', 'error');
+        return;
+      }
+      
+      // Save user profile
+      const userResult = await window.dataSdk.create({
+        type: 'user',
+        userId: appState.currentUser.id,
+        userName: appState.currentUser.name,
+        userEmail: appState.currentUser.email,
+        userMotivation: motivation || 'To become the best version of myself',
+        studyDays: appState.selectedDays.join(','),
+        preferredTime: `${studyTimeStart}-${studyTimeEnd}`,
+        streakCount: 0,
+        lastActiveDate: new Date().toISOString(),
+        totalTasksCompleted: 0,
+        executionScore: 0,
+        createdAt: new Date().toISOString()
+      });
+      
+      if (!userResult.isOk) {
+        showToast('Error saving profile. Please try again.', 'error');
+        return;
+      }
+      
+      // Save goal
+      const goalId = 'goal_' + Date.now();
+      const goalResult = await window.dataSdk.create({
+        type: 'goal',
+        goalId: goalId,
+        goalTitle: goalTitle,
+        goalCategory: appState.selectedCategory,
+        goalDeadline: goalDeadline,
+        goalNotes: goalNotes,
+        goalPriority: appState.selectedPriority,
+        goalProgress: 0,
+        userId: appState.currentUser.id,
+        createdAt: new Date().toISOString()
+      });
+      
+      if (!goalResult.isOk) {
+        showToast('Error saving goal. Please try again.', 'error');
+        return;
+      }
+      
+      // Generate micro-tasks based on category
+      await generateMicroTasks(goalId, goalTitle, appState.selectedCategory, goalDeadline);
+      
+      showToast('Your learning journey begins! 🚀', 'success');
+      
+      appState.isLoggedIn = true;
+      showDashboard();
+    }
+    
+    async function generateMicroTasks(goalId, goalTitle, category, deadline) {
+      const taskTemplates = {
+        python: ['Learn Python basics', 'Practice functions', 'Study OOP concepts', 'Build mini project', 'Review & practice'],
+        webdev: ['HTML fundamentals', 'CSS styling', 'JavaScript basics', 'DOM manipulation', 'Build project'],
+        exam: ['Review syllabus', 'Study core topics', 'Practice problems', 'Mock tests', 'Final revision'],
+        competitive: ['Understand exam pattern', 'Core subject study', 'Previous papers', 'Time management practice', 'Mock tests'],
+        personal: ['Define milestones', 'Daily practice', 'Track progress', 'Adjust approach', 'Celebrate wins'],
+        hobby: ['Learn basics', 'Practice skills', 'Try advanced techniques', 'Create something', 'Share progress']
+      };
+      
+      const tasks = taskTemplates[category] || taskTemplates.personal;
+      const deadlineDate = new Date(deadline);
+      const today = new Date();
+      const daysUntilDeadline = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+      const tasksPerSection = Math.ceil(daysUntilDeadline / tasks.length);
+      
+      for (let i = 0; i < tasks.length; i++) {
+        const taskDeadline = new Date(today);
+        taskDeadline.setDate(today.getDate() + (tasksPerSection * (i + 1)));
+        
+        if (allData.length >= 999) {
+          showToast('Data limit reached. Some tasks were not created.', 'warning');
+          break;
+        }
+        
+        await window.dataSdk.create({
+          type: 'task',
+          taskId: 'task_' + Date.now() + '_' + i,
+          taskTitle: tasks[i],
+          taskPriority: i === 0 ? 'high' : 'medium',
+          taskDeadline: taskDeadline.toISOString().split('T')[0],
+          taskDuration: 30,
+          taskCompleted: false,
+          taskGoalId: goalId,
+          userId: appState.currentUser.id,
+          createdAt: new Date().toISOString()
+        });
+      }
+    }
+    
+    // ============================================
+    // DASHBOARD
+    // ============================================
+    
+    function showDashboard() {
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('onboarding').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      
+      renderDashboard();
+      setupReminderSystem();
+    }
+    
+    function renderDashboard() {
+      // Update user name
+      const userNameDisplay = document.getElementById('user-name-display');
+      if (userNameDisplay && appState.currentUser) {
+        userNameDisplay.textContent = appState.currentUser.name.split(' ')[0];
+      }
+      
+      // Update date
+      const todayDate = document.getElementById('today-date');
+      if (todayDate) {
+        todayDate.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+      }
+      
+      // Update motivation
+      if (appState.userProfile && appState.userProfile.userMotivation) {
+        const motivationDisplay = document.getElementById('motivation-display');
+        if (motivationDisplay) {
+          motivationDisplay.textContent = `"${appState.userProfile.userMotivation}"`;
+        }
+      }
+      
+      // Calculate stats
+      const userTasks = appState.tasks.filter(t => t.userId === appState.currentUser?.id);
+      const completedTasks = userTasks.filter(t => t.taskCompleted);
+      const totalTasks = userTasks.length;
+      
+      const progress = totalTasks > 0 ? Math.round((completedTasks.length / totalTasks) * 100) : 0;
+      const streak = appState.userProfile?.streakCount || 0;
+      const executionScore = appState.userProfile?.executionScore || 0;
+      
+      // Update stats
+      document.getElementById('daily-progress').textContent = progress + '%';
+      document.getElementById('daily-progress-bar').style.width = progress + '%';
+      document.getElementById('current-streak').textContent = streak;
+      document.getElementById('header-streak').textContent = streak;
+      document.getElementById('execution-score').textContent = executionScore;
+      
+      // Update status
+      updateStatus(progress);
+      
+      // Render goals
+      renderGoals();
+      
+      // Render today's tasks
+      renderTodayTasks();
+      
+      // Update badges
+      updateBadges(streak, completedTasks.length);
+    }
+    
+    function updateStatus(progress) {
+      const statusEmoji = document.getElementById('status-emoji');
+      const currentStatus = document.getElementById('current-status');
+      const statusDetail = document.getElementById('status-detail');
+      
+      if (progress >= 80) {
+        statusEmoji.textContent = '🚀';
+        currentStatus.textContent = 'Ahead';
+        currentStatus.className = 'text-xl font-bold text-green-400';
+        statusDetail.textContent = 'Amazing progress!';
+      } else if (progress >= 50) {
+        statusEmoji.textContent = '🎯';
+        currentStatus.textContent = 'On Track';
+        currentStatus.className = 'text-xl font-bold text-yellow-400';
+        statusDetail.textContent = 'Keep it up!';
+      } else {
+        statusEmoji.textContent = '💪';
+        currentStatus.textContent = 'Behind';
+        currentStatus.className = 'text-xl font-bold text-orange-400';
+        statusDetail.textContent = 'You can catch up!';
+      }
+    }
+    
+    function renderGoals() {
+      const container = document.getElementById('active-goals');
+      const userGoals = appState.goals.filter(g => g.userId === appState.currentUser?.id);
+      
+      if (userGoals.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-2">🎯</div>
+            <p>No active goals yet. Create your first goal!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = userGoals.map(goal => {
+        const goalTasks = appState.tasks.filter(t => t.taskGoalId === goal.goalId);
+        const completedGoalTasks = goalTasks.filter(t => t.taskCompleted);
+        const progress = goalTasks.length > 0 ? Math.round((completedGoalTasks.length / goalTasks.length) * 100) : 0;
+        
+        const categoryEmojis = {
+          python: '🐍', webdev: '💻', exam: '📚', competitive: '🏆', personal: '🌟', hobby: '🎨'
+        };
+        
+        const deadline = new Date(goal.goalDeadline);
+        const daysLeft = Math.ceil((deadline - new Date()) / (1000 * 60 * 60 * 24));
+        
+        return `
+          <div class="glass-card rounded-xl p-4 task-item">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">${categoryEmojis[goal.goalCategory] || '📌'}</span>
+                <div>
+                  <h3 class="font-semibold">${goal.goalTitle}</h3>
+                  <p class="text-xs text-gray-400">${daysLeft > 0 ? daysLeft + ' days left' : 'Overdue!'}</p>
+                </div>
+              </div>
+              <span class="text-sm ${goal.goalPriority === 'high' ? 'text-red-400' : goal.goalPriority === 'low' ? 'text-green-400' : 'text-yellow-400'}">
+                ${goal.goalPriority === 'high' ? '🔴' : goal.goalPriority === 'low' ? '🟢' : '🟡'}
+              </span>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2">
+              <div class="bg-indigo-500 h-2 rounded-full transition-all" style="width: ${progress}%"></div>
+            </div>
+            <div class="flex justify-between items-center mt-2">
+              <span class="text-xs text-gray-400">${completedGoalTasks.length}/${goalTasks.length} tasks</span>
+              <span class="text-xs font-semibold text-indigo-400">${progress}%</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function renderTodayTasks() {
+      const container = document.getElementById('today-tasks');
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Get tasks that are due today or not completed
+      const userTasks = appState.tasks.filter(t => 
+        t.userId === appState.currentUser?.id && 
+        (!t.taskCompleted || t.taskDeadline === today)
+      );
+      
+      // Sort by priority and deadline
+      const priorityOrder = { high: 0, medium: 1, low: 2 };
+      userTasks.sort((a, b) => {
+        if (priorityOrder[a.taskPriority] !== priorityOrder[b.taskPriority]) {
+          return priorityOrder[a.taskPriority] - priorityOrder[b.taskPriority];
+        }
+        return new Date(a.taskDeadline) - new Date(b.taskDeadline);
+      });
+      
+      const displayTasks = userTasks.slice(0, 5);
+      
+      if (displayTasks.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-2">✅</div>
+            <p>All caught up! Add more tasks or goals.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = displayTasks.map(task => {
+        const goal = appState.goals.find(g => g.goalId === task.taskGoalId);
+        return `
+          <div class="task-item flex items-center gap-4 p-3 rounded-xl ${task.taskCompleted ? 'opacity-50' : ''}">
+            <button onclick="toggleTask('${task.__backendId}')" class="w-6 h-6 rounded-full border-2 ${task.taskCompleted ? 'bg-indigo-500 border-indigo-500' : 'border-gray-500'} flex items-center justify-center flex-shrink-0">
+              ${task.taskCompleted ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
+            </button>
+            <div class="flex-1">
+              <p class="${task.taskCompleted ? 'line-through text-gray-500' : 'font-medium'}">${task.taskTitle}</p>
+              <p class="text-xs text-gray-500">${goal?.goalTitle || 'No goal'} • ${task.taskDuration || 30} min</p>
+            </div>
+            <span class="text-xs px-2 py-1 rounded-full ${task.taskPriority === 'high' ? 'bg-red-500/20 text-red-400' : task.taskPriority === 'low' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}">
+              ${task.taskPriority}
+            </span>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    async function toggleTask(backendId) {
+      const task = allData.find(d => d.__backendId === backendId);
+      if (!task) return;
+      
+      task.taskCompleted = !task.taskCompleted;
+      
+      const result = await window.dataSdk.update(task);
+      
+      if (result.isOk) {
+        showToast(task.taskCompleted ? 'Task completed! 🎉' : 'Task marked incomplete', 'success');
+        
+        // Update streak and execution score
+        if (task.taskCompleted && appState.userProfile) {
+          await updateUserStats();
+        }
+      } else {
+        showToast('Failed to update task', 'error');
+      }
+    }
+    
+    async function updateUserStats() {
+      if (!appState.userProfile) return;
+      
+      const today = new Date().toISOString().split('T')[0];
+      const lastActive = appState.userProfile.lastActiveDate?.split('T')[0];
+      
+      let newStreak = appState.userProfile.streakCount || 0;
+      
+      if (lastActive !== today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        
+        if (lastActive === yesterday.toISOString().split('T')[0]) {
+          newStreak++;
+        } else {
+          newStreak = 1;
+        }
+      }
+      
+      const userTasks = appState.tasks.filter(t => t.userId === appState.currentUser?.id);
+      const completedTasks = userTasks.filter(t => t.taskCompleted);
+      const completion = userTasks.length > 0 ? (completedTasks.length / userTasks.length) : 0;
+      const consistencyWeight = Math.min(newStreak / 30, 1);
+      const executionScore = Math.round(completion * 100 * consistencyWeight);
+      
+      appState.userProfile.streakCount = newStreak;
+      appState.userProfile.lastActiveDate = new Date().toISOString();
+      appState.userProfile.totalTasksCompleted = completedTasks.length;
+      appState.userProfile.executionScore = executionScore;
+      
+      await window.dataSdk.update(appState.userProfile);
+    }
+    
+    function updateBadges(streak, completedTasks) {
+      const container = document.getElementById('badges-container');
+      
+      let badges = [];
+      
+      if (completedTasks >= 1) {
+        badges.push({ emoji: '🌟', name: 'First Step', earned: true });
+      }
+      if (streak >= 7) {
+        badges.push({ emoji: '🔥', name: '7 Day Streak', earned: true });
+      }
+      if (completedTasks >= 10) {
+        badges.push({ emoji: '💪', name: 'Task Master', earned: true });
+      }
+      if (streak >= 30) {
+        badges.push({ emoji: '🏆', name: 'Monthly Champion', earned: true });
+      }
+      
+      // Add unearned badges
+      if (completedTasks < 1) {
+        badges.push({ emoji: '🌟', name: 'First Step', earned: false });
+      }
+      if (streak < 7) {
+        badges.push({ emoji: '🔥', name: '7 Day Streak', earned: false });
+      }
+      if (completedTasks < 10) {
+        badges.push({ emoji: '💪', name: 'Task Master', earned: false });
+      }
+      
+      container.innerHTML = badges.slice(0, 4).map(badge => `
+        <div class="bg-gray-800/50 rounded-full px-3 py-1 text-sm flex items-center gap-1 ${badge.earned ? '' : 'opacity-50'}">
+          <span>${badge.emoji}</span> ${badge.name}
+        </div>
+      `).join('');
+    }
+    
+    // ============================================
+    // MODALS
+    // ============================================
+    
+    function showAddGoalModal() {
+      document.getElementById('add-goal-modal').classList.remove('hidden');
+      document.getElementById('add-goal-modal').classList.add('flex');
+      
+      // Set default deadline
+      const deadlineInput = document.getElementById('modal-goal-deadline');
+      const defaultDeadline = new Date();
+      defaultDeadline.setDate(defaultDeadline.getDate() + 30);
+      deadlineInput.value = defaultDeadline.toISOString().split('T')[0];
+      
+      // Setup priority buttons
+      document.querySelectorAll('.modal-priority-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.modal-priority-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+      });
+    }
+    
+    function closeAddGoalModal() {
+      document.getElementById('add-goal-modal').classList.add('hidden');
+      document.getElementById('add-goal-modal').classList.remove('flex');
+    }
+    
+    async function saveGoalFromModal() {
+      const category = document.getElementById('modal-goal-category').value;
+      const title = document.getElementById('modal-goal-title').value.trim();
+      const deadline = document.getElementById('modal-goal-deadline').value;
+      const notes = document.getElementById('modal-goal-notes').value.trim();
+      const priority = document.querySelector('.modal-priority-btn.selected')?.dataset.priority || 'medium';
+      
+      if (!title) {
+        showToast('Please enter a goal title', 'error');
+        return;
+      }
+      
+      if (!deadline) {
+        showToast('Please select a deadline', 'error');
+        return;
+      }
+      
+      if (allData.length >= 999) {
+        showToast('Maximum data limit reached. Please delete some items.', 'error');
+        return;
+      }
+      
+      const goalId = 'goal_' + Date.now();
+      
+      const result = await window.dataSdk.create({
+        type: 'goal',
+        goalId: goalId,
+        goalTitle: title,
+        goalCategory: category,
+        goalDeadline: deadline,
+        goalNotes: notes,
+        goalPriority: priority,
+        goalProgress: 0,
+        userId: appState.currentUser.id,
+        createdAt: new Date().toISOString()
+      });
+      
+      if (result.isOk) {
+        await generateMicroTasks(goalId, title, category, deadline);
+        showToast('Goal created! 🎯', 'success');
+        closeAddGoalModal();
+        
+        // Clear form
+        document.getElementById('modal-goal-title').value = '';
+        document.getElementById('modal-goal-notes').value = '';
+      } else {
+        showToast('Failed to create goal', 'error');
+      }
+    }
+    
+    function showAddTaskModal() {
+      const modal = document.getElementById('add-task-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      
+      // Populate goal dropdown
+      const goalSelect = document.getElementById('modal-task-goal');
+      const userGoals = appState.goals.filter(g => g.userId === appState.currentUser?.id);
+      
+      goalSelect.innerHTML = '<option value="">-- Select a goal --</option>' + 
+        userGoals.map(g => `<option value="${g.goalId}">${g.goalTitle}</option>`).join('');
+      
+      // Set default deadline
+      const deadlineInput = document.getElementById('modal-task-deadline');
+      deadlineInput.value = new Date().toISOString().split('T')[0];
+      
+      // Setup priority buttons
+      document.querySelectorAll('.task-priority-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.task-priority-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+      });
+    }
+    
+    function closeAddTaskModal() {
+      document.getElementById('add-task-modal').classList.add('hidden');
+      document.getElementById('add-task-modal').classList.remove('flex');
+    }
+    
+    async function saveTaskFromModal() {
+      const goalId = document.getElementById('modal-task-goal').value;
+      const title = document.getElementById('modal-task-title').value.trim();
+      const deadline = document.getElementById('modal-task-deadline').value;
+      const duration = parseInt(document.getElementById('modal-task-duration').value) || 30;
+      const priority = document.querySelector('.task-priority-btn.selected')?.dataset.priority || 'medium';
+      
+      if (!title) {
+        showToast('Please enter a task title', 'error');
+        return;
+      }
+      
+      if (!goalId) {
+        showToast('Please select a goal', 'error');
+        return;
+      }
+      
+      if (allData.length >= 999) {
+        showToast('Maximum data limit reached. Please delete some items.', 'error');
+        return;
+      }
+      
+      const result = await window.dataSdk.create({
+        type: 'task',
+        taskId: 'task_' + Date.now(),
+        taskTitle: title,
+        taskPriority: priority,
+        taskDeadline: deadline,
+        taskDuration: duration,
+        taskCompleted: false,
+        taskGoalId: goalId,
+        userId: appState.currentUser.id,
+        createdAt: new Date().toISOString()
+      });
+      
+      if (result.isOk) {
+        showToast('Task added! 📝', 'success');
+        closeAddTaskModal();
+        
+        // Clear form
+        document.getElementById('modal-task-title').value = '';
+      } else {
+        showToast('Failed to add task', 'error');
+      }
+    }
+    
+    // ============================================
+    // REMINDER SYSTEM
+    // ============================================
+    
+    function setupReminderSystem() {
+      // Check for upcoming tasks every minute
+      setInterval(checkReminders, 60000);
+      
+      // Initial check
+      setTimeout(checkReminders, 5000);
+    }
+    
+    function checkReminders() {
+      if (!appState.userProfile?.preferredTime) return;
+      
+      const [startTime] = appState.userProfile.preferredTime.split('-');
+      const [hours, minutes] = startTime.split(':').map(Number);
+      
+      const now = new Date();
+      const scheduledTime = new Date();
+      scheduledTime.setHours(hours, minutes, 0, 0);
+      
+      const timeDiff = scheduledTime - now;
+      const minutesUntil = Math.floor(timeDiff / 60000);
+      
+      // 10 minutes before
+      if (minutesUntil > 0 && minutesUntil <= 10) {
+        const pendingTasks = appState.tasks.filter(t => 
+          t.userId === appState.currentUser?.id && !t.taskCompleted
+        );
+        
+        if (pendingTasks.length > 0) {
+          appState.currentTaskId = pendingTasks[0].__backendId;
+          showReminder(pendingTasks[0], 'gentle');
+        }
+      }
+    }
+    
+    function showReminder(task, tone = 'gentle') {
+      const popup = document.getElementById('reminder-popup');
+      const emoji = document.getElementById('reminder-emoji');
+      const title = document.getElementById('reminder-title');
+      const message = document.getElementById('reminder-message');
+      const taskName = document.getElementById('reminder-task-name');
+      
+      if (tone === 'gentle') {
+        emoji.textContent = '⏰';
+        title.textContent = 'Hey Bro! Time to Study';
+        message.textContent = 'Your scheduled task is about to begin. Ready to crush it?';
+      } else if (tone === 'firm') {
+        emoji.textContent = '💪';
+        title.textContent = 'Come On, Let\'s Go!';
+        message.textContent = 'I know you can do this. Just start with 10 minutes!';
+      } else {
+        emoji.textContent = '🔥';
+        title.textContent = 'Don\'t Break Your Streak!';
+        message.textContent = 'Remember why you started. Every minute counts!';
+      }
+      
+      taskName.textContent = task.taskTitle;
+      
+      popup.classList.remove('hidden');
+      popup.classList.add('flex');
+    }
+    
+    function startTask() {
+      document.getElementById('reminder-popup').classList.add('hidden');
+      document.getElementById('reminder-popup').classList.remove('flex');
+      
+      if (appState.currentTaskId) {
+        toggleTask(appState.currentTaskId);
+      }
+      
+      showToast('Great! Let\'s go! 🚀', 'success');
+    }
+    
+    function snoozeReminder() {
+      document.getElementById('reminder-popup').classList.add('hidden');
+      document.getElementById('reminder-popup').classList.remove('flex');
+      
+      showToast('Snoozed for 5 minutes', 'warning');
+      
+      // Show firmer reminder after 5 minutes
+      setTimeout(() => {
+        const task = allData.find(d => d.__backendId === appState.currentTaskId);
+        if (task && !task.taskCompleted) {
+          showReminder(task, 'firm');
+        }
+      }, 300000);
+    }
+    
+    function showMoodSelector() {
+      document.getElementById('reminder-popup').classList.add('hidden');
+      document.getElementById('reminder-popup').classList.remove('flex');
+      
+      const modal = document.getElementById('mood-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      
+      // Setup mood button clicks
+      document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.onclick = () => selectMood(btn.dataset.mood);
+      });
+    }
+    
+    function selectMood(mood) {
+      document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.dataset.mood === mood) {
+          btn.classList.add('selected');
+        }
+      });
+      
+      const moodMessages = {
+        stressed: 'I understand you\'re stressed. Take a deep breath. How about just 10 minutes to clear your mind?',
+        tired: 'Being tired is tough. Rest is important, but a quick 10-minute session might actually energize you!',
+        angry: 'I hear you. Sometimes the best way to deal with frustration is to channel it into something productive.',
+        sad: 'I\'m sorry you\'re having a rough time. Remember your why: ',
+        lazy: 'We all have lazy days! Just 10 minutes - that\'s all I ask. You might surprise yourself!',
+        overwhelmed: 'When everything feels too much, breaking it down helps. Let\'s do just one tiny task together.',
+        moodoff: 'Not feeling it today? That\'s okay. A micro-session might shift your energy.',
+        other: 'Whatever you\'re going through, I\'m here. Just 10 minutes of focus can change your day.'
+      };
+      
+      let message = moodMessages[mood] || moodMessages.other;
+      
+      if (mood === 'sad' && appState.userProfile?.userMotivation) {
+        message += `"${appState.userProfile.userMotivation}"`;
+      }
+      
+      document.getElementById('mood-message').textContent = message;
+      document.getElementById('mood-response').classList.remove('hidden');
+    }
+    
+    function closeMoodModal() {
+      document.getElementById('mood-modal').classList.add('hidden');
+      document.getElementById('mood-modal').classList.remove('flex');
+    }
+    
+    function startMicroSession() {
+      closeMoodModal();
+      showToast('Starting 10-minute micro-session! You got this! 💪', 'success');
+      
+      // Start a 10-minute timer (simplified)
+      setTimeout(() => {
+        showToast('10 minutes done! How do you feel now? 🌟', 'success');
+      }, 10000); // 10 seconds for demo, would be 600000 for 10 minutes
+    }
+    
+    // ============================================
+    // REFLECTION & SENTIMENT
+    // ============================================
+    
+    async function submitReflection() {
+      const text = document.getElementById('daily-reflection').value.trim();
+      
+      if (!text) {
+        showToast('Please write something about your day', 'error');
+        return;
+      }
+      
+      if (allData.length >= 999) {
+        showToast('Maximum data limit reached', 'error');
+        return;
+      }
+      
+      // Simple sentiment analysis
+      const positiveWords = ['great', 'good', 'amazing', 'awesome', 'excellent', 'happy', 'proud', 'accomplished', 'productive', 'learned', 'progress'];
+      const negativeWords = ['bad', 'terrible', 'frustrated', 'stressed', 'tired', 'failed', 'struggled', 'difficult', 'overwhelmed', 'disappointed'];
+      
+      const lowerText = text.toLowerCase();
+      let positiveCount = 0;
+      let negativeCount = 0;
+      
+      positiveWords.forEach(word => {
+        if (lowerText.includes(word)) positiveCount++;
+      });
+      
+      negativeWords.forEach(word => {
+        if (lowerText.includes(word)) negativeCount++;
+      });
+      
+      let sentiment = 'neutral';
+      let score = 50;
+      
+      if (positiveCount > negativeCount) {
+        sentiment = 'positive';
+        score = Math.min(100, 60 + (positiveCount * 10));
+      } else if (negativeCount > positiveCount) {
+        sentiment = 'negative';
+        score = Math.max(0, 40 - (negativeCount * 10));
+      }
+      
+      const result = await window.dataSdk.create({
+        type: 'reflection',
+        reflectionDate: new Date().toISOString(),
+        reflectionText: text,
+        reflectionSentiment: sentiment,
+        reflectionScore: score,
+        userId: appState.currentUser.id,
+        createdAt: new Date().toISOString()
+      });
+      
+      if (result.isOk) {
+        showSentimentResult(sentiment, score);
+        document.getElementById('daily-reflection').value = '';
+        showToast('Reflection saved! 📝', 'success');
+      } else {
+        showToast('Failed to save reflection', 'error');
+      }
+    }
+    
+    function showSentimentResult(sentiment, score) {
+      const container = document.getElementById('sentiment-result');
+      const emoji = document.getElementById('sentiment-emoji');
+      const label = document.getElementById('sentiment-label');
+      const feedback = document.getElementById('sentiment-feedback');
+      
+      if (sentiment === 'positive') {
+        emoji.textContent = '😊';
+        label.textContent = 'Positive';
+        label.className = 'font-semibold sentiment-positive';
+        feedback.textContent = 'Great mindset! Keep up the amazing work. Your positive attitude is the key to success!';
+      } else if (sentiment === 'negative') {
+        emoji.textContent = '😔';
+        label.textContent = 'Challenging';
+        label.className = 'font-semibold sentiment-negative';
+        feedback.textContent = appState.userProfile?.userMotivation 
+          ? `Remember: "${appState.userProfile.userMotivation}" - Tomorrow is a new opportunity!`
+          : 'Every challenge is a stepping stone. Tomorrow is a fresh start!';
+      } else {
+        emoji.textContent = '😐';
+        label.textContent = 'Neutral';
+        label.className = 'font-semibold sentiment-neutral';
+        feedback.textContent = 'Steady progress is still progress. Keep moving forward!';
+      }
+      
+      container.classList.remove('hidden');
+    }
+    
+    // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
+    
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      
+      const colors = {
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        warning: 'bg-yellow-500',
+        info: 'bg-indigo-500'
+      };
+      
+      const icons = {
+        success: '✓',
+        error: '✕',
+        warning: '⚠',
+        info: 'ℹ'
+      };
+      
+      const toast = document.createElement('div');
+      toast.className = `toast ${colors[type]} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 max-w-sm`;
+      toast.innerHTML = `
+        <span class="text-lg">${icons[type]}</span>
+        <span class="text-sm">${message}</span>
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+    
+    // ============================================
+    // INITIALIZE
+    // ============================================
+    
+    initializeApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d6eba4a528e693a',t:'MTc3MjYwNDczMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
